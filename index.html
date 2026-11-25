@@ -14,13 +14,14 @@
   <title>BudgetOS</title>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div><div class="eyebrow">PERSONAL FINANCE SYSTEM</div><h1>Budget<span>OS</span></h1></div>
-      <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
-    </header>
+<div class="app-shell">
+  <header class="topbar">
+    <div><div class="eyebrow">PERSONAL FINANCE SYSTEM</div><h1>Budget<span>OS</span></h1></div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Export backup">⚙</button>
+  </header>
 
-    <main>
+  <main>
+    <section class="page active" id="homePage" data-page="home">
       <section class="hero card">
         <div class="row between"><span class="muted">NET WORTH</span><span class="pill">● LOCAL</span></div>
         <div class="networth" id="netWorth">₹0</div>
@@ -29,7 +30,6 @@
           <div><small>LIABILITIES</small><strong id="liabilities">₹0</strong></div>
         </div>
       </section>
-
       <section class="section-head"><h2>This month</h2><span id="monthLabel"></span></section>
       <section class="grid2">
         <div class="metric card"><small>INCOME</small><strong class="green" id="incomeTotal">₹0</strong></div>
@@ -37,56 +37,75 @@
         <div class="metric card"><small>MONTH BALANCE</small><strong id="monthBalance">₹0</strong></div>
         <div class="metric card"><small>EMI THIS MONTH</small><strong id="emiTotal">₹0</strong></div>
       </section>
-
       <section class="section-head"><h2>Quick actions</h2></section>
       <section class="actions">
         <button class="action" data-open="transactionModal"><b>＋</b><span>Add transaction</span></button>
         <button class="action" data-open="emiModal"><b>▤</b><span>Add EMI</span></button>
         <button class="action" data-open="assetModal"><b>◇</b><span>Add asset</span></button>
       </section>
-
-      <section class="section-head"><h2>EMI tracker</h2><span id="emiCount">0 active</span></section>
-      <section class="card list-card" id="emiList"><div class="empty">No EMIs added yet.</div></section>
-
-      <section class="section-head"><h2>Recent activity</h2></section>
-      <section class="card list-card" id="transactionList"><div class="empty">Your transactions will appear here.</div></section>
-
+      <section class="section-head"><h2>Jarvis</h2></section>
       <section class="jarvis card">
         <div class="jarvis-orb">J</div><div class="jarvis-copy"><strong>Jarvis</strong><p>Financial assistant connection can be added here.</p></div>
-        <button class="small-btn" id="jarvisInfo">Open</button>
+        <button class="small-btn" id="openJarvisFromHome">Open</button>
       </section>
-    </main>
-    <nav class="tabbar"><a class="active" href="#home">⌂<small>Home</small></a><a href="#activity">⇄<small>Activity</small></a><a href="#emi">▤<small>EMI</small></a><a href="#jarvis">◉<small>Jarvis</small></a></nav>
-  </div>
+    </section>
 
-  <dialog id="transactionModal" class="modal">
-    <form method="dialog" id="transactionForm"><div class="modal-head"><h2>Add transaction</h2><button class="close">×</button></div>
-      <label>Type<select id="txType"><option value="expense">Expense</option><option value="income">Income</option></select></label>
-      <label>Title<input id="txTitle" required placeholder="e.g. Salary, groceries"></label>
-      <label>Amount (₹)<input id="txAmount" type="number" min="1" step="0.01" required></label>
-      <label>Date<input id="txDate" type="date" required></label>
-      <button class="primary" value="save">Save transaction</button>
-    </form>
-  </dialog>
+    <section class="page" id="activityPage" data-page="activity" hidden>
+      <section class="page-title"><div class="eyebrow">MONEY MOVEMENT</div><h2>Activity</h2><p>Review your recent income and expenses.</p></section>
+      <div class="section-head"><h2>Recent transactions</h2><button class="text-btn" data-open="transactionModal">＋ Add</button></div>
+      <section class="card list-card" id="transactionList"><div class="empty">Your transactions will appear here.</div></section>
+    </section>
 
-  <dialog id="emiModal" class="modal">
-    <form method="dialog" id="emiForm"><div class="modal-head"><h2>Add EMI</h2><button class="close">×</button></div>
-      <label>Loan name<input id="emiName" required placeholder="e.g. Bike loan"></label>
-      <label>Monthly EMI (₹)<input id="emiAmount" type="number" min="1" required></label>
-      <label>Loan start date<input id="emiStart" type="date" required></label>
-      <label>Last EMI date<input id="emiEnd" type="date" required></label>
-      <label>Total loan amount (₹)<input id="emiPrincipal" type="number" min="0" required></label>
-      <button class="primary" value="save">Save EMI</button>
-    </form>
-  </dialog>
+    <section class="page" id="emiPage" data-page="emi" hidden>
+      <section class="page-title"><div class="eyebrow">REPAYMENT OVERVIEW</div><h2>EMI tracker</h2><p>Track your monthly instalments and repayment dates.</p></section>
+      <div class="section-head"><h2>Your loans</h2><span id="emiCount">0 active</span></div>
+      <section class="card list-card" id="emiList"><div class="empty">No EMIs added yet.</div></section>
+      <button class="primary page-action" data-open="emiModal">＋ Add EMI</button>
+    </section>
 
-  <dialog id="assetModal" class="modal">
-    <form method="dialog" id="assetForm"><div class="modal-head"><h2>Add asset</h2><button class="close">×</button></div>
-      <label>Asset name<input id="assetName" required placeholder="e.g. Savings account"></label>
-      <label>Current value (₹)<input id="assetValue" type="number" min="0" required></label>
-      <button class="primary" value="save">Save asset</button>
-    </form>
-  </dialog>
-  <script src="app.js"></script>
+    <section class="page" id="jarvisPage" data-page="jarvis" hidden>
+      <section class="page-title"><div class="eyebrow">FINANCIAL ASSISTANT</div><h2>Jarvis</h2><p>Your BudgetOS assistant space.</p></section>
+      <section class="jarvis card jarvis-large">
+        <div class="jarvis-orb">J</div><div class="jarvis-copy"><strong>Jarvis AI</strong><p>Jarvis AI is not connected in this starter build. Your existing BudgetOS AI endpoint can be connected in a later update.</p></div>
+      </section>
+      <button class="primary" id="jarvisInfo">Connection status</button>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Main navigation">
+    <button class="tab active" type="button" data-tab="home" aria-current="page">⌂<small>Home</small></button>
+    <button class="tab" type="button" data-tab="activity">⇄<small>Activity</small></button>
+    <button class="tab" type="button" data-tab="emi">▤<small>EMI</small></button>
+    <button class="tab" type="button" data-tab="jarvis">◉<small>Jarvis</small></button>
+  </nav>
+</div>
+
+<dialog id="transactionModal" class="modal">
+  <form method="dialog" id="transactionForm"><div class="modal-head"><h2>Add transaction</h2><button class="close" type="button">×</button></div>
+    <label>Type<select id="txType"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+    <label>Title<input id="txTitle" required placeholder="e.g. Salary, groceries"></label>
+    <label>Amount (₹)<input id="txAmount" type="number" min="1" step="0.01" required></label>
+    <label>Date<input id="txDate" type="date" required></label>
+    <button class="primary" type="submit">Save transaction</button>
+  </form>
+</dialog>
+<dialog id="emiModal" class="modal">
+  <form method="dialog" id="emiForm"><div class="modal-head"><h2>Add EMI</h2><button class="close" type="button">×</button></div>
+    <label>Loan name<input id="emiName" required placeholder="e.g. Bike loan"></label>
+    <label>Monthly EMI (₹)<input id="emiAmount" type="number" min="1" required></label>
+    <label>Loan start date<input id="emiStart" type="date" required></label>
+    <label>Last EMI date<input id="emiEnd" type="date" required></label>
+    <label>Outstanding principal (₹)<input id="emiPrincipal" type="number" min="0" required></label>
+    <button class="primary" type="submit">Save EMI</button>
+  </form>
+</dialog>
+<dialog id="assetModal" class="modal">
+  <form method="dialog" id="assetForm"><div class="modal-head"><h2>Add asset</h2><button class="close" type="button">×</button></div>
+    <label>Asset name<input id="assetName" required placeholder="e.g. Savings account"></label>
+    <label>Current value (₹)<input id="assetValue" type="number" min="0" required></label>
+    <button class="primary" type="submit">Save asset</button>
+  </form>
+</dialog>
+<script src="app.js"></script>
 </body>
 </html>
