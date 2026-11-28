@@ -1,7 +1,7 @@
 name: BudgetOS iOS Build
 on:
   push:
-    branches: ["ios-tauri-build"]
+    branches: [ios-tauri-build]
   workflow_dispatch:
 permissions:
   contents: write
@@ -16,53 +16,63 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Build React frontend
-        run: npm run build
-      - name: Install Rust targets
-        uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios,aarch64-apple-ios-sim
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2" --locked
-      - name: Build iOS simulator
-        run: cargo tauri ios build --target aarch64-apple-ios-sim
-      - name: Package simulator app
+      - name: Install frontend dependencies
+        run: npm install
+      - name: Build React frontend
+        run: npm run build
+      - name: Initialize iOS project
+        run: npx tauri ios init
+      - name: Build iOS simulator app
+        run: npx tauri ios build --target aarch64-apple-ios-sim
+      - name: Package simulator output
         run: |
           mkdir -p release
-          APP_PATH="$(find src-tauri/gen/apple -name "*.app" -type d | head -n 1)"
-          if [ -n "$APP_PATH" ]; then ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" release/BudgetOS-iOS-Simulator.zip; fi
-      - name: Build signed device IPA
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' && secrets.APPLE_CERTIFICATE_PASSWORD != '' && secrets.APPLE_PROVISIONING_PROFILE_BASE64 != '' }}
+          APP="$(find src-tauri/gen/apple -name '*.app' -type d | head -n 1)"
+          if [ -n "$APP" ]; then ditto -c -k --sequesterRsrc --keepParent "$APP" release/BudgetOS-iOS-Simulator.zip; fi
+      - name: Check device signing configuration
+        id: signing
         env:
-          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_PROVISIONING_PROFILE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+          CERT: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+          PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: |
-          mkdir -p "$RUNNER_TEMP/signing" release
-          echo "$APPLE_CERTIFICATE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/certificate.p12"
-          echo "$APPLE_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/profile.mobileprovision"
+          if [ -n "$CERT" ] && [ -n "$PROFILE" ] && [ -n "$PASSWORD" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "ready=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Import Apple signing assets
+        if: steps.signing.outputs.ready == 'true'
+        env:
+          CERT: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+          PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/signing" "$HOME/Library/MobileDevice/Provisioning Profiles"
+          echo "$CERT" | base64 --decode > "$RUNNER_TEMP/signing/cert.p12"
+          echo "$PROFILE" | base64 --decode > "$RUNNER_TEMP/signing/profile.mobileprovision"
           security create-keychain -p "" "$RUNNER_TEMP/signing/build.keychain"
           security default-keychain -s "$RUNNER_TEMP/signing/build.keychain"
           security unlock-keychain -p "" "$RUNNER_TEMP/signing/build.keychain"
-          security import "$RUNNER_TEMP/signing/certificate.p12" -k "$RUNNER_TEMP/signing/build.keychain" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security import "$RUNNER_TEMP/signing/cert.p12" -k "$RUNNER_TEMP/signing/build.keychain" -P "$PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple: -s -k "" "$RUNNER_TEMP/signing/build.keychain"
-          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          cp "$RUNNER_TEMP/signing/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/budgetos.mobileprovision"
-          cargo tauri ios build --target aarch64-apple-ios
-          find src-tauri/gen/apple -name "*.ipa" -type f -exec cp {} release/BudgetOS.ipa \;
+          cp "$RUNNER_TEMP/signing/profile.mobileprovision" "$HOME/Library/MobileDevice/Provisioning Profiles/BudgetOS.mobileprovision"
+      - name: Build signed device IPA
+        if: steps.signing.outputs.ready == 'true'
+        run: npx tauri ios build --target aarch64-apple-ios
+      - name: Collect IPA
+        if: steps.signing.outputs.ready == 'true'
+        run: find src-tauri/gen/apple -name '*.ipa' -type f -exec cp {} release/BudgetOS.ipa \;
       - uses: actions/upload-artifact@v4
         with:
           name: BudgetOS-iOS-${{ github.run_number }}
           path: release/*
           if-no-files-found: warn
-      - name: Create prerelease for signed IPA
-        if: ${{ hashFiles('release/BudgetOS.ipa') != '' }}
+          retention-days: 14
+      - name: Publish signed IPA prerelease
+        if: steps.signing.outputs.ready == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ios-build-${{ github.run_number }}
           name: BudgetOS iOS Build ${{ github.run_number }}
           prerelease: true
-          files: release/*
+          files: release/*.ipa

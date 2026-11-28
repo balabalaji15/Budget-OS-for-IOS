@@ -1,0 +1,1 @@
+fn main(){budgetos_lib::run()}
