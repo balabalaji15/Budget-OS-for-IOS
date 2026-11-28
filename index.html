@@ -567,6 +567,37 @@ body {
   .fab { width:45px; height:45px; min-height:45px; }
 }
 
+
+/* Bottom dock sizing: slightly larger controls, seated closer to the iPhone bottom edge */
+.bottom {
+  min-height:88px;
+  padding-top:8px;
+  padding-bottom:calc(2px + env(safe-area-inset-bottom));
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 1.16fr minmax(0,1fr) minmax(0,1fr);
+  align-items:center;
+}
+.navbtn {
+  min-height:58px;
+  padding:5px 0 1px;
+  gap:4px;
+  font-size:10px;
+}
+.navbtn .navico { font-size:22px; }
+.fab {
+  width:54px;
+  height:54px;
+  min-height:54px;
+  font-size:32px;
+  transform:translateY(2px);
+}
+.toast { bottom:calc(96px + env(safe-area-inset-bottom)); }
+@media(max-width:380px) {
+  .bottom { min-height:86px; padding-bottom:calc(1px + env(safe-area-inset-bottom)); }
+  .navbtn { min-height:56px; font-size:9px; }
+  .navbtn .navico { font-size:20px; }
+  .fab { width:50px; height:50px; min-height:50px; }
+}
+
 </style>
 </head>
 <body>
