@@ -542,6 +542,79 @@ body {
 #add > #keypad button { min-height:58px; font-size:19px; border-radius:16px; }
 #add > button.primary { min-height:48px; margin:4px 0 16px; }
 
+
+/* Add Entry: keep the complete form inside the viewport; keypad anchored at bottom */
+#add.active {
+  position:fixed !important;
+  z-index:60 !important;
+  top:calc(env(safe-area-inset-top) + 58px) !important;
+  bottom:calc(82px + env(safe-area-inset-bottom)) !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:min(calc(100% - 24px),536px) !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:2px 2px 8px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  gap:0 !important;
+  animation:none !important;
+}
+#add.active > h1 { flex:0 0 auto; font-size:20px; margin:0 0 2px; }
+#add.active > .sub { flex:0 0 auto; font-size:11px; margin:0 0 8px; }
+#add.active > #entryTypes { flex:0 0 40px; height:40px; min-height:40px; margin:0 0 7px; }
+#add.active > .fieldrow {
+  flex:0 0 43px;
+  height:43px;
+  min-height:43px;
+  margin:3px 0;
+  padding:7px 11px;
+  border-radius:12px;
+}
+#add.active > #entryAmountView {
+  flex:0 0 42px;
+  height:42px;
+  line-height:42px;
+  margin:7px 0 3px;
+  font-size:30px;
+  text-align:center;
+}
+#add.active > #keypad {
+  flex:1 1 auto;
+  min-height:0;
+  max-height:208px;
+  margin:4px 0 7px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:repeat(4,minmax(0,1fr));
+  gap:6px;
+}
+#add.active > #keypad button {
+  min-height:0 !important;
+  height:100%;
+  padding:2px;
+  border-radius:14px;
+  font-size:18px;
+}
+#add.active > button.primary {
+  flex:0 0 43px;
+  height:43px;
+  min-height:43px;
+  margin:0;
+  padding:7px 12px;
+}
+@media(max-height:760px) {
+  #add.active { top:calc(env(safe-area-inset-top) + 52px) !important; bottom:calc(76px + env(safe-area-inset-bottom)) !important; }
+  #add.active > .fieldrow { flex-basis:37px; height:37px; min-height:37px; margin:2px 0; padding:5px 9px; }
+  #add.active > #entryTypes { flex-basis:36px; height:36px; min-height:36px; }
+  #add.active > #entryAmountView { flex-basis:36px; height:36px; line-height:36px; font-size:27px; }
+  #add.active > #keypad { max-height:176px; gap:4px; }
+  #add.active > button.primary { flex-basis:38px; height:38px; min-height:38px; }
+}
+
 </style>
 </head>
 <body>
