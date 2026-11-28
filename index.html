@@ -1044,6 +1044,30 @@ body {
  .bottom{bottom:env(safe-area-inset-bottom, 0px)!important}
 }
 
+
+/* Global overlays must sit above the dock; sheets stop above its top edge */
+/* Keep the full dock at the bottom of the visible iOS viewport */
+.bottom{
+ position:fixed!important;left:50%!important;right:auto!important;top:auto!important;
+ bottom:0!important;transform:translateX(-50%)!important;z-index:9999!important;
+}
+/* Every popup/backdrop is layered above the dock; popup content cannot extend beneath it */
+.quickback,.modalback{
+ z-index:10020!important;
+ align-items:flex-end!important;
+ padding:12px 12px calc(94px + env(safe-area-inset-bottom))!important;
+ box-sizing:border-box!important;
+}
+.quickpanel,.modal{
+ max-height:calc(100dvh - 150px - env(safe-area-inset-top))!important;
+ margin:0 auto!important;
+ overflow-y:auto!important;
+ overscroll-behavior:contain!important;
+}
+.modalback .modal{width:min(540px,100%)!important}
+.quickback.open,.modalback.open{display:flex!important}
+.toast{z-index:10030!important;bottom:calc(94px + env(safe-area-inset-bottom))!important}
+
 </style>
 </head>
 <body>
