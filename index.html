@@ -884,7 +884,7 @@ body {
 .bottom{
  position:fixed!important;z-index:999!important;
  left:50%!important;right:auto!important;top:auto!important;
- bottom:calc(1px + env(safe-area-inset-bottom))!important;
+ bottom:0!important;
  transform:translateX(-50%)!important;
  width:calc(100% - 28px)!important;max-width:520px!important;
  height:82px!important;min-height:82px!important;max-height:82px!important;
@@ -927,7 +927,7 @@ body {
  .bottom .fab{width:54px!important;height:54px!important;min-height:54px!important}
 }
 @media(display-mode:standalone){
- .bottom{bottom:calc(1px + env(safe-area-inset-bottom))!important}
+ .bottom{bottom:0!important}
 }
 
 </style>
