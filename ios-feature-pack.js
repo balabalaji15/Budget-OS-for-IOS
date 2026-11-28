@@ -24,10 +24,12 @@ style.textContent=`
 .bosx-progress{height:5px;border-radius:8px;background:#393047;margin:12px 0 20px;overflow:hidden}.bosx-progress i{display:block;height:100%;background:linear-gradient(90deg,#9220ff,#e047ff);transition:width .2s}
 .bosx-field{display:block;width:100%;padding:13px;border:1px solid #48365f;border-radius:12px;background:#0e0c1c;color:#fff;margin:7px 0 13px}
 .bosx-chiprow{display:flex;flex-wrap:wrap;gap:7px}.bosx-chip{border:1px solid #57406f;background:#201833;color:#e8d8ff;padding:9px 12px;border-radius:22px;font-size:11px}
-.bosx-chip.selected{background:#7625b4;border-color:#df9aff}.bosx-row{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #ffffff13}.bosx-row:last-child{border:0}
+.bosx-chip.selected{background:#7625b4;border-color:#df9aff}.bosx-budget-list{display:grid;gap:7px;margin-top:14px}.bosx-budget-item{display:flex!important;align-items:center;justify-content:space-between;gap:10px;margin:0!important;padding:9px 10px;border:1px solid #403253;border-radius:12px;background:#171326;color:#eee!important;font-size:11px!important}.bosx-budget-input{display:flex;align-items:center;gap:5px;width:48%;min-width:120px;padding:0 8px;border:1px solid #49365f;border-radius:9px;background:#0e0c1c}.bosx-budget-input b{color:#cda5f4}.bosx-budget-input input{width:100%;min-width:0;border:0;background:transparent;color:#fff;padding:9px 0;font-size:12px;outline:none}.bosx-row{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #ffffff13}.bosx-row:last-child{border:0}
 .bosx-stat{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bosx-stat .card{margin:0}
 `;
 document.head.appendChild(style);
+/* Keep every screen's last row clear of the fixed bottom dock on iPhone. */
+const dockFix=document.createElement('style');dockFix.textContent='body{padding-bottom:calc(124px + env(safe-area-inset-bottom))!important}.app{padding-bottom:calc(132px + env(safe-area-inset-bottom))!important}.screen{scroll-margin-bottom:132px}.bottom{padding-bottom:calc(12px + env(safe-area-inset-bottom));z-index:20}';document.head.appendChild(dockFix);
 const more=document.getElementById('more');
 if(more&&!document.getElementById('bosxTools')){
  const host=document.createElement('div');host.id='bosxTools';
@@ -45,11 +47,11 @@ if(more&&!document.getElementById('bosxTools')){
 const overlay=document.createElement('div');overlay.className='bosx-backdrop';overlay.id='bosxOnboarding';
 overlay.innerHTML='<div class="bosx-sheet" role="dialog" aria-modal="true" aria-label="BudgetOS setup"><div class="eyebrow">BUDGETOS · FIRST-TIME SETUP</div><div class="row between"><h2 id="bosxTitle">Let’s set up your budget</h2><span class="tiny" id="bosxStep">1 / 4</span></div><div class="bosx-progress"><i id="bosxProgress" style="width:25%"></i></div><div id="bosxBody"></div><div class="row" style="margin-top:15px"><button class="secondary" id="bosxBack" style="flex:1">Back</button><button class="primary" id="bosxNext" style="flex:2">Continue</button></div><button class="link" id="bosxSkip" style="width:100%;margin-top:8px">Set up later</button></div>';
 document.body.appendChild(overlay);
-let step=0,setup={name:'',income:'',priority:'debt',categories:['Housing','Food & Groceries','Transport','Bills & Utilities','Personal','Savings']};
+let step=0,setup={name:'',income:'',priority:'debt',categories:['Housing','Food & Groceries','Transport','Bills & Utilities','Personal','Savings'],categoryBudgets:{}};
 const steps=[
  ()=>'<p class="sub">Create your local profile. Nothing is uploaded to a server.</p><label class="tiny">What should we call you?</label><input class="bosx-field" id="bosxName" autocomplete="name" placeholder="Your name" value="'+esc(setup.name)+'">',
  ()=>'<p class="sub">Set your regular take-home monthly income.</p><label class="tiny">Monthly income (₹)</label><input class="bosx-field" id="bosxIncome" type="number" min="0" inputmode="decimal" placeholder="Enter amount" value="'+esc(setup.income)+'">',
- ()=>'<p class="sub">Choose the areas you want BudgetOS to organize first.</p><div class="bosx-chiprow">'+['Housing','Food & Groceries','Transport','Bills & Utilities','Subscriptions','Health','Personal','Education','Savings','Debt / EMI'].map(x=>'<button type="button" class="bosx-chip '+(setup.categories.includes(x)?'selected':'')+'" data-bosx-cat="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div>',
+ ()=>'<p class="sub">Select the categories you need, then enter a monthly budget amount for each one.</p><div class="bosx-chiprow">'+['Housing','Food & Groceries','Transport','Bills & Utilities','Subscriptions','Health','Personal','Education','Savings','Debt / EMI'].map(x=>'<button type="button" class="bosx-chip '+(setup.categories.includes(x)?'selected':'')+'" data-bosx-cat="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div><div class="bosx-budget-list">'+setup.categories.map(x=>'<label class="bosx-budget-item"><span>'+esc(x)+'</span><span class="bosx-budget-input"><b>₹</b><input type="number" min="0" inputmode="decimal" data-bosx-budget="'+esc(x)+'" placeholder="Monthly value" value="'+esc(setup.categoryBudgets[x]??'')+'"></span></label>').join('')+'</div>',
  ()=>'<p class="sub">What should your BudgetOS coach prioritize?</p><div class="bosx-chiprow">'+[['debt','Debt first'],['balance','Balanced budget'],['savings','Build savings'],['goals','Reach a goal']].map(([v,n])=>'<button type="button" class="bosx-chip '+(setup.priority===v?'selected':'')+'" data-bosx-priority="'+v+'">'+n+'</button>').join('')+'</div><p class="tiny" style="margin-top:14px">You can change your categories and priorities anytime in the app.</p>'
 ];
 function drawStep(){
@@ -57,22 +59,24 @@ function drawStep(){
  $('bosxStep').textContent=(step+1)+' / 4';$('bosxProgress').style.width=((step+1)*25)+'%';
  $('bosxBody').innerHTML=steps[step]();
  $('bosxBack').style.visibility=step===0?'hidden':'visible';$('bosxNext').textContent=step===3?'Finish setup':'Continue';
- document.querySelectorAll('[data-bosx-cat]').forEach(b=>b.onclick=()=>{const x=b.dataset.bosxCat;setup.categories=setup.categories.includes(x)?setup.categories.filter(v=>v!==x):setup.categories.concat(x);b.classList.toggle('selected')});
+ document.querySelectorAll('[data-bosx-cat]').forEach(b=>b.onclick=()=>{const x=b.dataset.bosxCat;setup.categories=setup.categories.includes(x)?setup.categories.filter(v=>v!==x):setup.categories.concat(x);drawStep()});
+ document.querySelectorAll('[data-bosx-budget]').forEach(input=>input.oninput=()=>{setup.categoryBudgets[input.dataset.bosxBudget]=input.value});
  document.querySelectorAll('[data-bosx-priority]').forEach(b=>b.onclick=()=>{setup.priority=b.dataset.bosxPriority;document.querySelectorAll('[data-bosx-priority]').forEach(x=>x.classList.toggle('selected',x===b))});
 }
 function startOnboarding(force=false){
  ensure();if(!force&&db.onboarding.completed)return;
- step=0;setup.name=db.profile?.name||'';setup.income=String(db.income||'');drawStep();overlay.classList.add('open');
+ step=0;setup.name=db.profile?.name||'';setup.income=String(db.income||'');setup.categories=['Housing','Food & Groceries','Transport','Bills & Utilities','Personal','Savings'];setup.categoryBudgets={};(db.categories||[]).forEach(c=>{if(setup.categories.includes(c.name))setup.categoryBudgets[c.name]=String(c.budget||'')});drawStep();overlay.classList.add('open');
 }
 $('bosxBack').onclick=()=>{if(step>0){step--;drawStep()}};
 $('bosxNext').onclick=()=>{
  if(step===0){setup.name=$('bosxName').value.trim();if(!setup.name){$('bosxName').focus();return toast('Please enter your name')}}
  if(step===1){setup.income=$('bosxIncome').value;if(!setup.income||Number(setup.income)<0)return toast('Enter a valid monthly income')}
+ if(step===2){document.querySelectorAll('[data-bosx-budget]').forEach(input=>setup.categoryBudgets[input.dataset.bosxBudget]=input.value)}
  if(step<3){step++;drawStep();return}
  const old=db.categories||[];const iconMap={'Housing':'🏠','Food & Groceries':'🛒','Transport':'🚗','Bills & Utilities':'💡','Subscriptions':'🎧','Health':'🩺','Personal':'👤','Education':'📚','Savings':'💰','Debt / EMI':'💳'};
  db.profile={...(db.profile||{}),name:setup.name,onboardingCompleted:true};
  db.income=Number(setup.income)||0;
- db.categories=setup.categories.map((name,i)=>({id:uid2(),name,kind:name==='Savings'?'saving':'expense',budget:old.find(c=>c.name===name)?.budget||0,icon:iconMap[name]||'•',group:name==='Savings'?'saving':name==='Debt / EMI'?'fixed':'living'}));
+ db.categories=setup.categories.map((name,i)=>({id:uid2(),name,kind:name==='Savings'?'saving':'expense',budget:Number(setup.categoryBudgets[name]??old.find(c=>c.name===name)?.budget??0)||0,icon:iconMap[name]||'•',group:name==='Savings'?'saving':name==='Debt / EMI'?'fixed':'living'}));
  db.onboarding={completed:true,priority:setup.priority,completedAt:new Date().toISOString()};
  saveData();overlay.classList.remove('open');toast('Your BudgetOS setup is complete');
 };
