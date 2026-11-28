@@ -237,6 +237,44 @@ input[type="date"],input[type="number"]{font-size:16px!important}
   .screen#add .fieldrow input#entryDate { width: 32px !important; max-width: 32px !important; min-width: 0; }
 }
 
+
+/* November 2026 compact iPhone layout refinement */
+html, body { min-height:100%; }
+body { min-height:100dvh; padding-bottom:calc(104px + env(safe-area-inset-bottom)); }
+.app { padding:7px 13px 20px; min-height:100dvh; }
+.top { gap:7px; padding:2px 0 8px; min-height:44px; }
+.brand { gap:7px; }
+.brandmark { width:34px; height:34px; border-radius:11px; font-size:22px; }
+.brandname { font-size:12px; }
+.tagline { font-size:7px; letter-spacing:.15em; }
+.topbtn { width:34px; height:34px; border-radius:11px; font-size:15px; flex:none; }
+.monthbar { height:38px; margin-bottom:11px; }
+.screen { animation:none !important; }
+.screen.active { animation:none !important; }
+.bottom {
+  position:fixed; z-index:50; bottom:0; left:50%; transform:translateX(-50%);
+  width:min(100%,560px); min-height:78px;
+  padding:7px 12px calc(5px + env(safe-area-inset-bottom));
+  grid-template-columns:1fr 1fr 1.2fr 1fr 1fr;
+  align-items:center;
+  background:linear-gradient(180deg,#100d20f2,#080714 55%);
+  border-top:1px solid #3a2a56;
+  box-shadow:0 -8px 24px #0005;
+}
+.navbtn { min-height:51px; gap:5px; padding:5px 0 2px; font-size:10px; justify-content:center; white-space:nowrap; }
+.navbtn .navico { font-size:21px; line-height:1.1; }
+.fab { width:55px; height:55px; font-size:32px; margin-top:-12px; align-self:center; }
+.toast { bottom:calc(100px + env(safe-area-inset-bottom)); }
+@media(max-width:380px) {
+  .app { padding-left:10px; padding-right:10px; }
+  .top { gap:5px; }
+  .topbtn { width:31px; height:32px; }
+  .brandname { font-size:11px; }
+  .tagline { font-size:6px; }
+  .bottom { padding-left:7px; padding-right:7px; }
+  .navbtn { font-size:9px; }
+}
+
 </style>
 </head>
 <body>
