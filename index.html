@@ -969,6 +969,39 @@ body {
  #add.active>button.primary{flex-basis:43px!important;height:43px!important;min-height:43px!important}
 }
 
+
+/* Final dock visibility + keypad-only expansion */
+.bottom{
+ bottom:0!important;
+ height:calc(82px + env(safe-area-inset-bottom))!important;
+ min-height:calc(82px + env(safe-area-inset-bottom))!important;
+ max-height:calc(82px + env(safe-area-inset-bottom))!important;
+ padding:7px 12px calc(7px + env(safe-area-inset-bottom))!important;
+}
+@media(max-width:380px){
+ .bottom{
+  height:calc(76px + env(safe-area-inset-bottom))!important;
+  min-height:calc(76px + env(safe-area-inset-bottom))!important;
+  max-height:calc(76px + env(safe-area-inset-bottom))!important;
+  padding-bottom:calc(7px + env(safe-area-inset-bottom))!important;
+ }
+}
+@media(display-mode:standalone){.bottom{bottom:0!important}}
+#add.active{bottom:calc(92px + env(safe-area-inset-bottom))!important}
+#add.active>#keypad{
+ flex:1 1 0!important;
+ margin:3px 5px 8px!important;
+ gap:7px!important;
+ grid-template-rows:repeat(4,minmax(42px,1fr))!important;
+}
+#add.active>#keypad button{
+ min-height:42px!important;
+}
+@media(max-height:760px){
+ #add.active>#keypad{grid-template-rows:repeat(4,minmax(34px,1fr))!important;margin-bottom:7px!important}
+ #add.active>#keypad button{min-height:34px!important}
+}
+
 </style>
 </head>
 <body>
