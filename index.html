@@ -282,7 +282,7 @@ html, body { width:100%; max-width:100%; overflow-x:hidden; }
 body {
   min-height:100dvh;
   padding-top:env(safe-area-inset-top);
-  padding-bottom:calc(122px + env(safe-area-inset-bottom));
+  padding-bottom:calc(112px + env(safe-area-inset-bottom));
   overflow-x:hidden;
 }
 .app {
@@ -290,7 +290,7 @@ body {
   max-width:560px;
   min-height:100dvh;
   margin:0 auto;
-  padding:calc(7px + env(safe-area-inset-top)) max(12px, env(safe-area-inset-left)) calc(132px + env(safe-area-inset-bottom));
+  padding:7px max(12px, env(safe-area-inset-left)) 20px;
   overflow-x:clip;
 }
 /* Remove the tall brand/action strip to reclaim the iPhone's first screenful. */
@@ -408,7 +408,7 @@ input, select, textarea { min-width:0; max-width:100%; }
   .monthlabel { font-size:11px; }
 }
 @media (display-mode:standalone) {
-  .app { padding-top:calc(7px + env(safe-area-inset-top)); }
+  .app { padding-top:7px; }
 }
 
 </style>
