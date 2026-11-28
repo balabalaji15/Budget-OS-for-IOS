@@ -632,6 +632,61 @@ body {
  #add.active > button.primary{flex-basis:40px!important;height:40px!important;min-height:40px!important}
 }
 
+
+/* AUTHORITATIVE ADD ENTRY + IOS DOCK LAYOUT */
+#add.active{
+ position:fixed!important;z-index:60!important;
+ top:calc(env(safe-area-inset-top) + 150px)!important;
+ bottom:calc(102px + env(safe-area-inset-bottom))!important;
+ left:50%!important;right:auto!important;transform:translateX(-50%)!important;
+ width:calc(100% - 26px)!important;max-width:390px!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ margin:0!important;padding:0 0 4px!important;
+ display:flex!important;flex-direction:column!important;
+ overflow:hidden!important;gap:0!important;animation:none!important;
+}
+#add.active>h1{flex:0 0 auto;font-size:20px;line-height:1.2;margin:0 0 3px}
+#add.active>.sub{flex:0 0 auto;font-size:11px;line-height:1.3;margin:0 0 9px}
+#add.active>#entryTypes{flex:0 0 42px;height:42px;min-height:42px;margin:0 0 8px}
+#add.active>.fieldrow{flex:0 0 46px;height:46px;min-height:46px;margin:3px 0;padding:8px 12px;overflow:hidden}
+#add.active>.entry-date-row{position:relative}
+#add.active>.entry-date-row #entryDate{position:absolute!important;right:10px!important;top:50%!important;transform:translateY(-50%)!important;width:2px!important;height:2px!important;opacity:0!important;padding:0!important;border:0!important;pointer-events:none!important}
+#add.active>#entryAmountView{flex:0 0 44px;height:44px;line-height:44px;margin:5px 0 3px;font-size:31px;text-align:center}
+#add.active>#keypad{flex:1 1 0;min-height:0;max-height:none!important;margin:4px 0 8px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:6px}
+#add.active>#keypad button{height:100%;min-height:0!important;padding:2px;border-radius:15px;font-size:19px}
+#add.active>button.primary{flex:0 0 46px;height:46px;min-height:46px;margin:0;padding:8px 12px}
+.bottom{
+ position:fixed!important;z-index:999!important;left:50%!important;right:auto!important;
+ top:auto!important;bottom:0!important;transform:translateX(-50%)!important;
+ width:100%!important;max-width:560px!important;min-height:calc(88px + env(safe-area-inset-bottom))!important;
+ height:auto!important;box-sizing:border-box!important;
+ padding:7px max(10px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-right))!important;
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 1.12fr minmax(0,1fr) minmax(0,1fr)!important;
+ align-items:center!important;gap:2px!important;border-radius:22px 22px 0 0;
+ background:rgba(12,9,25,.97)!important;
+ border:1px solid #392750!important;border-bottom:0!important;
+ box-shadow:0 -8px 28px #0006!important;
+}
+.navbtn{min-width:0!important;min-height:54px!important;padding:4px 0!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:4px!important;font-size:10px!important;white-space:nowrap!important}
+.navbtn .navico{font-size:21px!important;line-height:1.1!important}
+.fab{width:54px!important;height:54px!important;min-height:54px!important;margin:0!important;align-self:center!important;justify-self:center!important}
+.app{padding-bottom:calc(112px + env(safe-area-inset-bottom))!important}
+@media(max-height:760px){
+ #add.active{top:calc(env(safe-area-inset-top) + 135px)!important;bottom:calc(96px + env(safe-area-inset-bottom))!important}
+ #add.active>.fieldrow{flex-basis:39px;height:39px;min-height:39px;margin:2px 0;padding:6px 10px}
+ #add.active>#entryTypes{flex-basis:38px;height:38px;min-height:38px}
+ #add.active>#entryAmountView{flex-basis:38px;height:38px;line-height:38px;font-size:28px}
+ #add.active>button.primary{flex-basis:41px;height:41px;min-height:41px}
+}
+@media(max-width:380px){
+ #add.active{width:calc(100% - 20px)!important}
+ .navbtn{font-size:9px!important}
+ .navbtn .navico{font-size:19px!important}
+ .fab{width:49px!important;height:49px!important;min-height:49px!important}
+}
+@media(display-mode:standalone){
+ .bottom{padding-bottom:calc(8px + env(safe-area-inset-bottom))!important}
+}
 </style>
 </head>
 <body>
@@ -669,7 +724,7 @@ body {
   <h1>Add Entry</h1><p class="sub">Quickly add your income, expense or saving</p>
   <div class="pilltabs" id="entryTypes"><button class="active" onclick="setEntryType('expense',this)">Expense</button><button onclick="setEntryType('income',this)">Income</button><button onclick="setEntryType('transaction',this)">Transaction</button></div>
   <button class="fieldrow" style="width:100%;text-align:left" onclick="openCategoryPicker()"><span>◯</span><span class="grow" id="selectedCategory">Select Category</span><span>›</span></button>
-  <button class="fieldrow" style="width:100%;text-align:left" onclick="document.getElementById('entryDate').showPicker?.()"><span>▣</span><span class="grow" id="selectedDateLabel">Dec 17, 2026</span><input id="entryDate" type="date" value="2026-12-17" style="width:30px;max-width:32px;opacity:.8" onchange="dateChanged()"></button>
+  <button class="fieldrow entry-date-row" style="width:100%;text-align:left;position:relative;overflow:hidden" onclick="openEntryDate()"><span>▣</span><span class="grow" id="selectedDateLabel">Dec 17, 2026</span><input id="entryDate" type="date" value="2026-12-17" aria-label="Choose entry date" onchange="dateChanged()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);width:2px;height:2px;opacity:0;padding:0;border:0;pointer-events:none"></button>
   <div class="fieldrow"><span>✎</span><input id="entryNote" placeholder="Add Note (optional)"></div>
   <div class="entry-amount" id="entryAmountView">₹0<span>&nbsp;</span></div>
   <div class="keypad" id="keypad">
@@ -867,7 +922,7 @@ function key(k){if(k==='del')entryValue=entryValue.length>1?entryValue.slice(0,-
 function updateEntryView(){$('entryAmountView').innerHTML=money(Number(entryValue))+'<span>&nbsp;</span>'}
 function openCategoryPicker(){if(selectedType==='income'){showModal('Select Category',`<button class="menurow" style="width:100%;text-align:left" onclick="selectedCat='Other Income';$('selectedCategory').textContent='Other Income';closeModal()">💵　Other Income　›</button>`);return}let list=db.categories.filter(c=>c.kind==='expense');showModal('Select Category',`<div>${list.map(c=>`<button class="menurow" style="width:100%;text-align:left" onclick="chooseCategory('${c.id}')"><span class="ico">${c.icon}</span><span class="grow">${escapeHtml(c.name)}</span>›</button>`).join('')}<button class="secondary" style="width:100%;margin-top:9px" onclick="closeModal();navigate('budget')">＋ Create category</button></div>`)}
 function chooseCategory(id){let c=db.categories.find(x=>x.id===id);selectedCat=c.name;$('selectedCategory').textContent=c.icon+' '+c.name;closeModal()}
-function dateChanged(){$('selectedDateLabel').textContent=new Date($('entryDate').value+'T00:00:00').toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'})}
+function openEntryDate(){const el=$('entryDate');if(!el)return;try{if(typeof el.showPicker==='function')el.showPicker();else el.click()}catch(_){el.click()}}\nfunction dateChanged(){$('selectedDateLabel').textContent=new Date($('entryDate').value+'T00:00:00').toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'})}
 function saveEntry(){let amount=Number(entryValue);if(amount<=0){toast('Enter an amount first');return}if(!selectedCat){toast('Please select a category');return}if(selectedType==='transaction'&&!confirm('Confirm and add this transaction?'))return;let date=$('entryDate').value||dateKey(currentDate)+'-'+String(currentDate.getDate()).padStart(2,'0');db.entries.unshift({id:uid(),name:selectedCat,category:selectedCat,type:selectedType,amount,date,note:$('entryNote').value});saveData();if(selectedType==='transaction'){playTransactionFireworks();setTimeout(()=>{navigate('home')},1250)}else{toast('Entry added successfully');navigate('home')}} 
 function playTransactionFireworks(){const layer=document.createElement('div');layer.className='celebration-layer';document.body.appendChild(layer);for(let b=0;b<5;b++){const cx=12+Math.random()*76,cy=18+Math.random()*58;for(let i=0;i<24;i++){const a=(Math.PI*2*i)/24,dist=55+Math.random()*75;const dot=document.createElement('i');dot.className='burst';dot.style.setProperty('--x',cx+'%');dot.style.setProperty('--y',cy+'%');dot.style.setProperty('--dx',Math.cos(a)*dist+'px');dot.style.setProperty('--dy',Math.sin(a)*dist+'px');dot.style.setProperty('--h',Math.floor(Math.random()*360));layer.appendChild(dot)}}setTimeout(()=>layer.remove(),1050);toast('Transaction added!')}
 function uid(){return 'x'+Math.random().toString(36).slice(2,10)}
