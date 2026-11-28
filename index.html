@@ -676,6 +676,41 @@ body {
   #add > #keypad button { font-size:15px; }
 }
 
+
+/* Flexible page scrolling, larger readable controls, and bottom-hugging navigation */
+html, body { min-height:100%; height:auto; overflow-x:hidden; overflow-y:auto; }
+body { padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
+.app { min-height:100dvh; height:auto; overflow:visible; padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
+.screen { overflow:visible; }
+.screen.active { display:block; overflow:visible; }
+.bottom {
+  position:fixed; left:50%; right:auto; bottom:0 !important;
+  width:min(100%,560px); min-height:76px;
+  padding:7px 12px calc(2px + env(safe-area-inset-bottom));
+  border-radius:20px 20px 0 0;
+  z-index:50;
+}
+.navbtn { min-height:54px; gap:5px; padding:5px 0 2px; font-size:10px; }
+.navbtn .navico { font-size:21px; }
+.fab { width:54px; height:54px; margin-top:-18px; font-size:31px; }
+.card { padding:15px; }
+.menurow { min-height:48px; }
+input, select, textarea { font-size:14px; }
+.screen#add.active {
+  position:relative !important; inset:auto !important; left:auto !important; top:auto !important;
+  bottom:auto !important; transform:none !important; width:auto !important; max-width:none !important;
+  height:auto !important; min-height:0 !important; max-height:none !important;
+  display:block !important; overflow:visible !important; padding:0 !important; margin:0 !important;
+}
+#add > #keypad { max-height:none; }
+@media(max-width:430px) {
+  .app { padding-left:14px; padding-right:14px; }
+  .bottom { min-height:78px; padding-bottom:calc(2px + env(safe-area-inset-bottom)); }
+  .navbtn { min-height:56px; font-size:10px; }
+  .navbtn .navico { font-size:22px; }
+  .fab { width:56px; height:56px; }
+}
+
 </style>
 </head>
 <body>
