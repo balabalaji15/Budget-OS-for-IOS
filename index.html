@@ -412,316 +412,55 @@ input, select, textarea { min-width:0; max-width:100%; }
 }
 
 
-/* iPhone 13 fixed-screen mode: no scrolling, compact restored header */
+
+/* Responsive iPhone layout: natural document scroll with a fixed bottom dock */
 html, body {
-  width:100%; height:100%; min-height:0;
-  overflow:hidden !important;
-  overscroll-behavior:none;
-  position:fixed; inset:0;
+  width:100%; height:auto; min-height:100%;
+  overflow-x:hidden !important; overflow-y:auto !important;
+  position:static !important; inset:auto !important;
+  overscroll-behavior-y:contain;
 }
 body {
-  padding:env(safe-area-inset-top) 0 0 !important;
-  -webkit-overflow-scrolling:auto;
-  touch-action:manipulation;
+  padding:env(safe-area-inset-top) 0 calc(82px + env(safe-area-inset-bottom)) !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
 }
 .app {
   width:100%; max-width:560px;
-  height:100dvh; min-height:0;
+  height:auto !important; min-height:100dvh !important;
   margin:0 auto;
-  padding:calc(5px + env(safe-area-inset-top)) max(10px,env(safe-area-inset-left)) calc(96px + env(safe-area-inset-bottom));
-  overflow:hidden !important;
-  display:flex; flex-direction:column;
-  gap:0;
+  padding:calc(8px + env(safe-area-inset-top)) max(10px,env(safe-area-inset-left)) 24px !important;
+  overflow:visible !important;
+  display:block !important;
 }
-.top {
-  display:flex !important;
-  flex:0 0 42px;
-  min-height:42px;
-  align-items:center;
-  gap:6px;
-  padding:0 0 5px;
-  overflow:hidden;
-}
-.brand { gap:7px; }
-.brandmark { width:32px; height:32px; border-radius:10px; font-size:21px; }
-.brandname { font-size:11px; line-height:1.05; }
-.tagline { font-size:6px; margin-top:1px; letter-spacing:.13em; }
-.topbtn { width:32px; height:32px; min-height:32px; border-radius:10px; font-size:14px; padding:0; }
-.monthbar {
-  flex:0 0 34px;
-  height:34px; min-height:34px;
-  margin:0 0 7px;
-  padding:0 5px;
-  border-radius:18px;
-}
-.monthbar button { width:27px; height:30px; min-height:30px; font-size:20px; }
-.monthlabel { font-size:11px; }
+.top { display:flex !important; height:auto !important; min-height:42px; }
+.monthbar { height:34px; min-height:34px; }
 .screen {
   display:none;
-  flex:1 1 auto;
-  min-height:0;
-  height:0;
-  width:100%;
-  max-width:100%;
-  overflow:hidden !important;
-  overscroll-behavior:none;
-  animation:none !important;
-  transform:none !important;
-}
-.screen.active {
-  display:block;
-  overflow:hidden !important;
-  animation:none !important;
-  transform:none !important;
-}
-.screen#home {
-  display:none;
-}
-.screen#home.active {
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-  justify-content:flex-start;
-}
-#home .row.between { flex:0 0 auto; min-height:30px; }
-#home .eyebrow { font-size:7px; letter-spacing:.13em; }
-#home h1 { font-size:13px !important; margin:1px 0; }
-#home .tiny { font-size:9px; }
-#home .hero {
-  flex:0 0 auto;
-  margin-top:2px !important;
-  padding:10px 12px;
-  border-radius:16px;
-}
-#home .hero .ico { width:34px !important; height:34px !important; font-size:18px !important; }
-#home .money { font-size:21px !important; }
-#home .hero-foot { margin-top:9px; }
-#home .hero-foot span { font-size:9px; }
-#home .hero-foot b { font-size:13px; margin-top:2px; }
-#home .section { flex:0 0 auto; margin:5px 2px 2px; min-height:18px; }
-#home .section h2 { font-size:12px; }
-#home .section .tiny, #home .section .link { font-size:9px; }
-#home .card { flex:0 0 auto; padding:7px 10px; border-radius:13px; }
-#home .lineitem { padding:5px 0; gap:7px; }
-#home .lineitem .ico { width:27px; height:27px; border-radius:9px; font-size:14px; }
-#home .lineitem b { font-size:10px; }
-#home .lineitem small { font-size:8px; margin-top:1px; }
-#home .amt { font-size:10px; }
-#home .grid2 { gap:6px; margin-top:4px; }
-#home .metric { padding:7px !important; }
-#home .metric strong { font-size:14px; margin:3px 0 1px; }
-#home .metric small { font-size:8px; }
-#home .progress { height:5px; margin-top:4px; }
-.bottom {
-  position:fixed !important;
-  left:50% !important; right:auto !important;
-  bottom:0 !important;
-  transform:translateX(-50%) !important;
-  width:100% !important; max-width:560px;
-  min-height:78px;
-  padding:5px max(6px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-right));
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 1.1fr minmax(0,1fr) minmax(0,1fr);
-  align-items:center;
-  gap:1px;
-  border-radius:18px 18px 0 0;
-}
-.navbtn {
-  min-width:0; min-height:49px;
-  padding:4px 0 2px; gap:3px;
-  font-size:9px; line-height:1.1;
-  white-space:nowrap;
-}
-.navbtn .navico { font-size:20px; line-height:1; }
-.fab { width:49px; height:49px; min-height:49px; margin:0; font-size:29px; align-self:center; }
-.toast { bottom:calc(86px + env(safe-area-inset-bottom)); }
-.modalback, .quickback { overflow:hidden !important; padding-bottom:env(safe-area-inset-bottom); }
-.modal, .quickpanel { max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overflow:hidden !important; }
-.screen#add.active {
-  position:fixed;
-  z-index:5;
-  top:calc(env(safe-area-inset-top) + 88px);
-  left:50%;
-  transform:translateX(-50%);
-  width:calc(100% - 22px);
-  max-width:534px;
-  height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 176px);
-  min-height:0;
-  overflow:hidden !important;
-  padding:0 0 2px;
-}
-.screen#add > #entryTypes { margin:6px 0; }
-.screen#add > .fieldrow { min-height:40px; padding:7px 9px; margin:4px 0; }
-.screen#add > #keypad { gap:5px; margin:4px 0; }
-.screen#add > #keypad button { min-height:clamp(36px,5dvh,44px); padding:4px; }
-.screen#add > #entryAmountView { margin:5px 0; font-size:29px; }
-.screen#add > button.primary { min-height:38px; padding:8px 12px; margin-top:4px; }
-@media(max-width:380px) {
-  .app { padding-left:8px; padding-right:8px; }
-  .top { gap:4px; }
-  .topbtn { width:29px; height:30px; min-height:30px; }
-  .brandname { font-size:10px; }
-  .tagline { font-size:5.5px; }
-  .bottom { padding-left:4px; padding-right:4px; }
-  .navbtn { font-size:8px; }
-  .navbtn .navico { font-size:18px; }
-  .fab { width:45px; height:45px; min-height:45px; }
-}
-
-
-/* Bottom dock sizing: slightly larger controls, seated closer to the iPhone bottom edge */
-.bottom {
-  min-height:88px;
-  padding-top:8px;
-  padding-bottom:calc(2px + env(safe-area-inset-bottom));
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) 1.16fr minmax(0,1fr) minmax(0,1fr);
-  align-items:center;
-}
-.navbtn {
-  min-height:58px;
-  padding:5px 0 1px;
-  gap:4px;
-  font-size:10px;
-}
-.navbtn .navico { font-size:22px; }
-.fab {
-  width:54px;
-  height:54px;
-  min-height:54px;
-  font-size:32px;
-  transform:translateY(2px);
-}
-.toast { bottom:calc(96px + env(safe-area-inset-bottom)); }
-@media(max-width:380px) {
-  .bottom { min-height:86px; padding-bottom:calc(1px + env(safe-area-inset-bottom)); }
-  .navbtn { min-height:56px; font-size:9px; }
-  .navbtn .navico { font-size:20px; }
-  .fab { width:50px; height:50px; min-height:50px; }
-}
-
-
-/* Add Entry: compact, complete iPhone 13 viewport layout */
-.screen#add.active {
-  position:fixed !important;
-  z-index:5;
-  top:calc(env(safe-area-inset-top) + 86px) !important;
-  bottom:calc(90px + env(safe-area-inset-bottom)) !important;
-  left:50% !important;
-  transform:translateX(-50%) !important;
-  width:calc(100% - 20px) !important;
-  max-width:534px;
-  height:auto !important;
-  min-height:0 !important;
-  max-height:none !important;
-  display:flex !important;
-  flex-direction:column;
-  justify-content:flex-start;
-  gap:0;
-  overflow:hidden !important;
-  padding:0 2px 2px !important;
-  margin:0;
-}
-#add > h1 { flex:0 0 auto; font-size:18px; line-height:1.15; margin:0 0 2px; }
-#add > .sub { flex:0 0 auto; font-size:10px; line-height:1.2; margin:0 0 5px; }
-#add > #entryTypes { flex:0 0 36px; min-height:36px; height:36px; margin:0 0 3px; padding:3px; }
-#add > #entryTypes button { padding:6px 4px; font-size:10px; }
-#add > #entryAmountView { flex:0 0 38px; height:38px; min-height:38px; margin:1px 0 3px; font-size:28px; line-height:38px; }
-#add > #keypad {
-  flex:1 1 auto;
-  min-height:0;
-  max-height:210px;
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  grid-template-rows:repeat(4,minmax(0,1fr));
-  gap:5px;
-  margin:0 0 5px;
-}
-#add > #keypad button {
-  min-width:0;
-  min-height:0;
-  height:100%;
-  padding:2px;
-  border-radius:13px;
-  font-size:17px;
-}
-#add > .fieldrow {
-  flex:0 0 34px;
-  min-height:34px;
-  height:34px;
-  padding:4px 9px;
-  margin:2px 0;
-  border-radius:10px;
-  font-size:10px;
-}
-#add > .fieldrow input { font-size:10px; }
-#add > button.primary {
-  flex:0 0 38px;
-  min-height:38px;
-  height:38px;
-  padding:7px 12px;
-  margin:4px 0 0;
-  font-size:12px;
-}
-@media(max-height:760px) {
-  .screen#add.active { top:calc(env(safe-area-inset-top) + 82px) !important; bottom:calc(86px + env(safe-area-inset-bottom)) !important; }
-  #add > h1 { font-size:16px; }
-  #add > .sub { margin-bottom:3px; }
-  #add > #entryTypes { flex-basis:32px; height:32px; min-height:32px; }
-  #add > #entryAmountView { flex-basis:32px; height:32px; min-height:32px; line-height:32px; font-size:24px; }
-  #add > #keypad { gap:4px; margin-bottom:3px; }
-  #add > .fieldrow { flex-basis:30px; height:30px; min-height:30px; margin:1px 0; padding:3px 8px; }
-  #add > button.primary { flex-basis:34px; height:34px; min-height:34px; margin-top:3px; }
-}
-@media(max-width:380px) {
-  .screen#add.active { width:calc(100% - 16px) !important; }
-  #add > #keypad button { font-size:15px; }
-}
-
-
-/* Flexible page scrolling, larger readable controls, and bottom-hugging navigation */
-html, body { min-height:100%; height:auto; overflow-x:hidden; overflow-y:auto; }
-body { padding-bottom:calc(76px + env(safe-area-inset-bottom)); }
-.app { min-height:100dvh; height:auto; overflow:visible; padding-bottom:calc(82px + env(safe-area-inset-bottom)); }
-.screen { overflow:visible; }
-.screen.active { display:block; overflow:visible; }
-.bottom {
-  position:fixed; left:50%; right:auto; bottom:0 !important;
-  width:min(100%,560px); min-height:76px;
-  padding:7px 12px calc(2px + env(safe-area-inset-bottom));
-  border-radius:20px 20px 0 0;
-  z-index:50;
-}
-.navbtn { min-height:54px; gap:5px; padding:5px 0 2px; font-size:10px; }
-.navbtn .navico { font-size:21px; }
-.fab { width:54px; height:54px; margin-top:-18px; font-size:31px; }
-.card { padding:15px; }
-.menurow { min-height:48px; }
-input, select, textarea { font-size:14px; }
-.screen#add.active {
-  position:relative !important; inset:auto !important; left:auto !important; top:auto !important;
-  bottom:auto !important; transform:none !important; width:auto !important; max-width:none !important;
   height:auto !important; min-height:0 !important; max-height:none !important;
-  display:block !important; overflow:visible !important; padding:0 !important; margin:0 !important;
+  overflow:visible !important; position:relative !important;
+  flex:none !important;
 }
-#add > #keypad { max-height:none; }
-@media(max-width:430px) {
-  .app { padding-left:14px; padding-right:14px; }
-  .bottom { min-height:78px; padding-bottom:calc(2px + env(safe-area-inset-bottom)); }
-  .navbtn { min-height:56px; font-size:10px; }
-  .navbtn .navico { font-size:22px; }
-  .fab { width:56px; height:56px; }
+.screen.active { display:block !important; overflow:visible !important; }
+.screen#add.active {
+  position:relative !important; inset:auto !important; transform:none !important;
+  width:auto !important; height:auto !important; max-height:none !important;
+  overflow:visible !important; display:block !important;
 }
-
-
-/* Dock placement: extend into the unused bottom safe-area gap */
 .bottom {
-  bottom:calc(-1 * env(safe-area-inset-bottom) - 8px) !important;
-  padding-bottom:2px !important;
+  position:fixed !important; left:50% !important; right:auto !important;
+  bottom:0 !important; transform:translateX(-50%) !important;
+  width:min(100%,560px) !important; min-height:78px;
+  padding:7px 12px calc(2px + env(safe-area-inset-bottom)) !important;
+  border-radius:20px 20px 0 0; z-index:100;
 }
+.navbtn { min-height:56px; gap:5px; padding:5px 0 2px; font-size:10px; }
+.navbtn .navico { font-size:22px; }
+.fab { width:56px; height:56px; margin-top:-18px; font-size:31px; }
 @media(max-width:430px) {
-  .bottom { bottom:calc(-1 * env(safe-area-inset-bottom) - 8px) !important; }
+  .app { padding-left:14px !important; padding-right:14px !important; }
+  .bottom { bottom:0 !important; }
 }
-
-
 
 </style>
 </head>
