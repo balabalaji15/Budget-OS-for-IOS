@@ -1031,6 +1031,19 @@ body {
 }
 .app{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
 
+
+/* FINAL DOCK POSITION: lowest safe visible position on iPhone */
+.bottom{
+ position:fixed!important;
+ left:50%!important;right:auto!important;top:auto!important;
+ bottom:env(safe-area-inset-bottom, 0px)!important;
+ transform:translateX(-50%)!important;
+ z-index:9999!important;
+}
+@media(display-mode:standalone){
+ .bottom{bottom:env(safe-area-inset-bottom, 0px)!important}
+}
+
 </style>
 </head>
 <body>
