@@ -1068,6 +1068,21 @@ body {
 .quickback.open,.modalback.open{display:flex!important}
 .toast{z-index:10030!important;bottom:calc(94px + env(safe-area-inset-bottom))!important}
 
+
+/* Category picker: show per-category budget, spent and remaining balance */
+.category-picker-list{display:flex;flex-direction:column;gap:9px}
+.category-picker-row{
+ width:100%;min-height:78px;display:flex;align-items:center;gap:12px;
+ padding:11px 13px;text-align:left;border:1px solid #342b4a;border-radius:17px;
+ background:linear-gradient(145deg,#191528,#120f20);color:#f6f1ff;
+}
+.category-picker-icon{flex:0 0 34px;font-size:23px;text-align:center}
+.category-picker-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.category-picker-name{font-size:13px;font-weight:750}
+.category-picker-meta{font-size:10px;color:#aaa0bd;white-space:normal}
+.category-picker-remaining{font-size:11px;font-weight:800}
+.category-picker-arrow{font-size:21px;color:#d9c9ef}
+
 </style>
 </head>
 <body>
@@ -1303,8 +1318,37 @@ function renderBudget(){let cats=db.categories.filter(c=>budgetFilter==='all'||c
 function setEntryType(type,b){selectedType=type==='transaction'?'expense':type;document.querySelectorAll('#entryTypes button').forEach(x=>x.classList.remove('active'));b.classList.add('active');selectedCat='';$('selectedCategory').textContent='Select Category';updateEntryView()}
 function key(k){if(k==='del')entryValue=entryValue.length>1?entryValue.slice(0,-1):'0';else if(k==='00')entryValue=(entryValue==='0'?'':entryValue)+'00';else entryValue=entryValue==='0'?k:entryValue+k;entryValue=entryValue.slice(0,10);updateEntryView()}
 function updateEntryView(){$('entryAmountView').innerHTML=money(Number(entryValue))+'<span>&nbsp;</span>'}
-function openCategoryPicker(){if(selectedType==='income'){showModal('Select Category',`<button class="menurow" style="width:100%;text-align:left" onclick="selectedCat='Other Income';$('selectedCategory').textContent='Other Income';closeModal()">💵　Other Income　›</button>`);return}let list=db.categories.filter(c=>c.kind==='expense');showModal('Select Category',`<div>${list.map(c=>`<button class="menurow" style="width:100%;text-align:left" onclick="chooseCategory('${c.id}')"><span class="ico">${c.icon}</span><span class="grow">${escapeHtml(c.name)}</span>›</button>`).join('')}<button class="secondary" style="width:100%;margin-top:9px" onclick="closeModal();navigate('budget')">＋ Create category</button></div>`)}
-function chooseCategory(id){let c=db.categories.find(x=>x.id===id);selectedCat=c.name;$('selectedCategory').textContent=c.icon+' '+c.name;closeModal()}
+function categoryMonthSpent(categoryName){
+ return monthEntries().filter(e=>e.type==='expense'&&e.category===categoryName).reduce((sum,e)=>sum+Number(e.amount||0),0);
+}
+function categoryRemaining(c){
+ return Math.max(0,Number(c.budget||0)-categoryMonthSpent(c.name));
+}
+function openCategoryPicker(){
+ if(selectedType==='income'){
+  showModal('Select Category',`<button class="menurow" style="width:100%;text-align:left" onclick="selectedCat='Other Income';$('selectedCategory').textContent='Other Income';closeModal()">💵　Other Income　›</button>`);
+  return;
+ }
+ let list=db.categories.filter(c=>c.kind==='expense');
+ showModal('Select Category',`<div class="category-picker-list">${list.map(c=>{
+  const budget=Number(c.budget||0),used=categoryMonthSpent(c.name),remaining=budget-used;
+  const remainingColor=remaining<0?'#ff7898':'#49dfb0';
+  return `<button class="category-picker-row" onclick="chooseCategory('${c.id}')">
+   <span class="category-picker-icon">${c.icon}</span>
+   <span class="category-picker-info"><span class="category-picker-name">${escapeHtml(c.name)}</span>
+    <span class="category-picker-meta">Budget ${money(budget)} · Spent ${money(used)}</span>
+    <span class="category-picker-remaining" style="color:${remainingColor}">Remaining ${money(remaining)}</span>
+   </span><span class="category-picker-arrow">›</span>
+  </button>`;
+ }).join('')}
+ <button class="secondary" style="width:100%;margin-top:9px" onclick="closeModal();navigate('budget')">＋ Create category</button></div>`);
+}
+function chooseCategory(id){
+ let c=db.categories.find(x=>x.id===id);
+ selectedCat=c.name;
+ $('selectedCategory').textContent=c.icon+' '+c.name;
+ closeModal();
+}
 function openEntryDate(){const el=$('entryDate');if(!el)return;try{if(typeof el.showPicker==='function')el.showPicker();else el.click()}catch(_){el.click()}}
 function dateChanged(){$('selectedDateLabel').textContent=new Date($('entryDate').value+'T00:00:00').toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'})}
 function saveEntry(){let amount=Number(entryValue);if(amount<=0){toast('Enter an amount first');return}if(!selectedCat){toast('Please select a category');return}if(selectedType==='transaction'&&!confirm('Confirm and add this transaction?'))return;let date=$('entryDate').value||dateKey(currentDate)+'-'+String(currentDate.getDate()).padStart(2,'0');db.entries.unshift({id:uid(),name:selectedCat,category:selectedCat,type:selectedType,amount,date,note:$('entryNote').value});saveData();if(selectedType==='transaction'){playTransactionFireworks();setTimeout(()=>{navigate('home')},1250)}else{toast('Entry added successfully');navigate('home')}} 
