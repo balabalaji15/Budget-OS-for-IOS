@@ -808,6 +808,20 @@ body {
  #add.active>button.primary{flex-basis:40px!important;height:40px!important;min-height:40px!important}
 }
 
+
+/* Bottom navigation: lower the dock contents to the maximum safe iOS position */
+.bottom{
+ bottom:0!important;
+ padding-top:5px!important;
+ padding-bottom:calc(1px + env(safe-area-inset-bottom))!important;
+ align-items:end!important;
+}
+.bottom .navbtn{transform:translateY(5px)!important}
+.bottom .fab{transform:translateY(3px)!important}
+@media(display-mode:standalone){
+ .bottom{padding-bottom:calc(1px + env(safe-area-inset-bottom))!important}
+}
+
 </style>
 </head>
 <body>
