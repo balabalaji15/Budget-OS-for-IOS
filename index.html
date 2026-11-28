@@ -516,6 +516,32 @@ body {
   .bottom { bottom:0 !important; }
 }
 
+
+/* Add Entry layout: details first, amount and keypad below */
+#add.active {
+  display:block !important;
+  position:relative !important;
+  inset:auto !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  padding-bottom:24px !important;
+}
+#add > h1 { margin-top:4px; }
+#add > .sub { margin-bottom:12px; }
+#add > #entryTypes { margin:8px 0 12px; }
+#add > .fieldrow { min-height:48px; margin:7px 0; padding:11px 13px; }
+#add > #entryAmountView { margin:18px 0 8px; font-size:34px; }
+#add > #keypad {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin:8px 0 14px;
+}
+#add > #keypad button { min-height:58px; font-size:19px; border-radius:16px; }
+#add > button.primary { min-height:48px; margin:4px 0 16px; }
+
 </style>
 </head>
 <body>
@@ -552,6 +578,9 @@ body {
 <section class="screen screenpad" id="add">
   <h1>Add Entry</h1><p class="sub">Quickly add your income, expense or saving</p>
   <div class="pilltabs" id="entryTypes"><button class="active" onclick="setEntryType('expense',this)">Expense</button><button onclick="setEntryType('income',this)">Income</button><button onclick="setEntryType('transaction',this)">Transaction</button></div>
+  <button class="fieldrow" style="width:100%;text-align:left" onclick="openCategoryPicker()"><span>◯</span><span class="grow" id="selectedCategory">Select Category</span><span>›</span></button>
+  <button class="fieldrow" style="width:100%;text-align:left" onclick="document.getElementById('entryDate').showPicker?.()"><span>▣</span><span class="grow" id="selectedDateLabel">Dec 17, 2026</span><input id="entryDate" type="date" value="2026-12-17" style="width:30px;max-width:32px;opacity:.8" onchange="dateChanged()"></button>
+  <div class="fieldrow"><span>✎</span><input id="entryNote" placeholder="Add Note (optional)"></div>
   <div class="entry-amount" id="entryAmountView">₹0<span>&nbsp;</span></div>
   <div class="keypad" id="keypad">
     <button onclick="key('7')">7</button><button onclick="key('8')">8</button><button onclick="key('9')">9</button>
@@ -559,9 +588,6 @@ body {
     <button onclick="key('1')">1</button><button onclick="key('2')">2</button><button onclick="key('3')">3</button>
     <button onclick="key('00')">00</button><button onclick="key('0')">0</button><button onclick="key('del')">⌫</button>
   </div>
-  <button class="fieldrow" style="width:100%;text-align:left" onclick="openCategoryPicker()"><span>◯</span><span class="grow" id="selectedCategory">Select Category</span><span>›</span></button>
-  <button class="fieldrow" style="width:100%;text-align:left" onclick="document.getElementById('entryDate').showPicker?.()"><span>▣</span><span class="grow" id="selectedDateLabel">Dec 17, 2026</span><input id="entryDate" type="date" value="2026-12-17" style="width:30px;max-width:32px;opacity:.8" onchange="dateChanged()"></button>
-  <div class="fieldrow"><span>✎</span><input id="entryNote" placeholder="Add Note (optional)"></div>
   <button class="primary" onclick="saveEntry()">Add Entry</button>
 </section>
 
@@ -735,7 +761,7 @@ function quickAction(action){
 }
 function saveFixedBill(e){e.preventDefault();db.categories.push({id:uid(),name:$('billName').value,kind:'expense',budget:Number($('billAmount').value),icon:'🧾',group:'fixed',dueDay:Number($('billDay').value)});closeModal();saveData();toast('Fixed bill added')}
 
-function navigate(id){document.body.classList.toggle('add-screen-open',id==='add');document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.nav===id));$('monthbar').classList.toggle('hidden',id!=='home');if(id==='add'){entryValue='0';selectedCat='';$('entryNote').value='';document.querySelectorAll('#entryTypes button').forEach((b,i)=>b.classList.toggle('active',['expense','income','transaction'][i]===selectedType));$('entryDate').value=dateKey(currentDate)+'-'+String(currentDate.getDate()).padStart(2,'0');updateEntryView()}if(id==='spending')renderSpending();if(id==='insights')renderInsights();if(id==='appearance')renderAppearance();window.scrollTo({top:0,behavior:db.settings.smooth?'smooth':'auto'})}
+function navigate(id){document.body.classList.toggle('add-screen-open',id==='add');document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.nav===id));$('monthbar').classList.toggle('hidden',id!=='home');if(id==='add'){entryValue='0';selectedCat='';$('entryNote').value='';document.querySelectorAll('#entryTypes button').forEach((b,i)=>b.classList.toggle('active',['expense','income','transaction'][i]===selectedType));$('entryDate').value=dateKey(currentDate)+'-'+String(currentDate.getDate()).padStart(2,'0');updateEntryView()}if(id==='spending')renderSpending();if(id==='insights')renderInsights();if(id==='appearance')renderAppearance();document.querySelector('.app')?.scrollTo({top:0,behavior:db.settings.smooth?'smooth':'auto'});window.scrollTo({top:0,behavior:'auto'})}
 function moveMonth(delta){currentDate.setMonth(currentDate.getMonth()+delta);$('monthText').textContent='▣ '+fmtMonth()+'⌄';$('spendMonthText').textContent='▣ '+fmtMonth()+'⌄';renderAll()}
 function openMore(){navigate('more')}
 function setBudgetFilter(f,b){budgetFilter=f;document.querySelectorAll('#budgetFilters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBudget()}
