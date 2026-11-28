@@ -712,14 +712,15 @@ input, select, textarea { font-size:14px; }
 }
 
 
-/* Dock placement: bring the navigation labels close to the physical screen bottom */
+/* Dock placement: pin navigation flush to the bottom edge */
 .bottom {
-  bottom:-78px !important;
+  bottom:0 !important;
   padding-bottom:calc(2px + env(safe-area-inset-bottom)) !important;
 }
 @media(max-width:430px) {
-  .bottom { bottom:-82px !important; }
+  .bottom { bottom:0 !important; }
 }
+
 
 </style>
 </head>
