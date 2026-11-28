@@ -598,6 +598,84 @@ body {
   .fab { width:50px; height:50px; min-height:50px; }
 }
 
+
+/* Add Entry: compact, complete iPhone 13 viewport layout */
+.screen#add.active {
+  position:fixed !important;
+  z-index:5;
+  top:calc(env(safe-area-inset-top) + 86px) !important;
+  bottom:calc(90px + env(safe-area-inset-bottom)) !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:calc(100% - 20px) !important;
+  max-width:534px;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  display:flex !important;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:0;
+  overflow:hidden !important;
+  padding:0 2px 2px !important;
+  margin:0;
+}
+#add > h1 { flex:0 0 auto; font-size:18px; line-height:1.15; margin:0 0 2px; }
+#add > .sub { flex:0 0 auto; font-size:10px; line-height:1.2; margin:0 0 5px; }
+#add > #entryTypes { flex:0 0 36px; min-height:36px; height:36px; margin:0 0 3px; padding:3px; }
+#add > #entryTypes button { padding:6px 4px; font-size:10px; }
+#add > #entryAmountView { flex:0 0 38px; height:38px; min-height:38px; margin:1px 0 3px; font-size:28px; line-height:38px; }
+#add > #keypad {
+  flex:1 1 auto;
+  min-height:0;
+  max-height:210px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:repeat(4,minmax(0,1fr));
+  gap:5px;
+  margin:0 0 5px;
+}
+#add > #keypad button {
+  min-width:0;
+  min-height:0;
+  height:100%;
+  padding:2px;
+  border-radius:13px;
+  font-size:17px;
+}
+#add > .fieldrow {
+  flex:0 0 34px;
+  min-height:34px;
+  height:34px;
+  padding:4px 9px;
+  margin:2px 0;
+  border-radius:10px;
+  font-size:10px;
+}
+#add > .fieldrow input { font-size:10px; }
+#add > button.primary {
+  flex:0 0 38px;
+  min-height:38px;
+  height:38px;
+  padding:7px 12px;
+  margin:4px 0 0;
+  font-size:12px;
+}
+@media(max-height:760px) {
+  .screen#add.active { top:calc(env(safe-area-inset-top) + 82px) !important; bottom:calc(86px + env(safe-area-inset-bottom)) !important; }
+  #add > h1 { font-size:16px; }
+  #add > .sub { margin-bottom:3px; }
+  #add > #entryTypes { flex-basis:32px; height:32px; min-height:32px; }
+  #add > #entryAmountView { flex-basis:32px; height:32px; min-height:32px; line-height:32px; font-size:24px; }
+  #add > #keypad { gap:4px; margin-bottom:3px; }
+  #add > .fieldrow { flex-basis:30px; height:30px; min-height:30px; margin:1px 0; padding:3px 8px; }
+  #add > button.primary { flex-basis:34px; height:34px; min-height:34px; margin-top:3px; }
+}
+@media(max-width:380px) {
+  .screen#add.active { width:calc(100% - 16px) !important; }
+  #add > #keypad button { font-size:15px; }
+}
+
 </style>
 </head>
 <body>
