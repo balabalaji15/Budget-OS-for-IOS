@@ -615,6 +615,23 @@ body {
   #add.active > button.primary { flex-basis:38px; height:38px; min-height:38px; }
 }
 
+
+/* Add Entry final correction from iPhone screenshot: date text stays inside its row,
+   keypad expands to use the available vertical space, and submit sits just above dock. */
+#add.active > .fieldrow:has(#entryDate){position:relative;overflow:hidden;padding-right:12px}
+#add.active > .fieldrow #entryDate{
+  position:absolute!important;inset:0!important;width:100%!important;max-width:none!important;
+  min-width:0!important;height:100%!important;opacity:0!important;margin:0!important;
+  padding:0!important;z-index:2!important;flex:none!important;
+}
+#add.active > #keypad{max-height:none!important;min-height:0!important;flex:1 1 0!important}
+#add.active > #keypad button{min-height:0!important;height:100%!important}
+#add.active > button.primary{margin-top:7px!important;flex:0 0 46px!important;height:46px!important;min-height:46px!important}
+@media(max-height:760px){
+ #add.active > #keypad{max-height:none!important}
+ #add.active > button.primary{flex-basis:40px!important;height:40px!important;min-height:40px!important}
+}
+
 </style>
 </head>
 <body>
