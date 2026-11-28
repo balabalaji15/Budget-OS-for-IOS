@@ -104,7 +104,7 @@ function convertAndroidBackup(raw){
   goals:[...goalMap.values()],paymentCards:Array.isArray(raw.paymentCards)?raw.paymentCards.map(c=>{const z={...c};['number','pan','fullNumber','cardNumber','primaryAccountNumber','cvv','cvc','securityCode','pin'].forEach(k=>delete z[k]);return z}):[],
   recurringPayments:Array.isArray(raw.recurringPayments)?raw.recurringPayments:[],bankAccounts:Array.isArray(raw.bankAccounts)?raw.bankAccounts:[],
   chatHistory:Array.isArray(raw.chatHistory)?raw.chatHistory:[],researchMemory:Array.isArray(raw.researchMemory)?raw.researchMemory:[],
-  androidBackupArchive:raw,androidMonths:raw.months,androidDefaultIncome:Number(raw.defaultIncome)||0,
+  androidDefaultIncome:Number(raw.defaultIncome)||0,planDrafts:raw.planDrafts||{},widgetPrefs:raw.widgetPrefs||{},jarvisBudgetMemory:raw.jarvisBudgetMemory||{},budgetHistory:raw.budgetHistory||[],budgetBrainFeedback:raw.budgetBrainFeedback||[],jarvisSession:raw.jarvisSession||null,jarvisProfile:raw.jarvisProfile||{},dashboardWidgetOrder:raw.dashboardWidgetOrder||[],
   profile:{...(db.profile||{}),name:raw.jarvisProfile?.preferredName||db.profile?.name||'',onboardingCompleted:true},
   onboarding:{completed:true,importedAndroidBackup:true,importedAt:new Date().toISOString()}};
  saveData();toast('Android backup imported · '+monthKeys.length+' months · '+entries.length+' transactions');
